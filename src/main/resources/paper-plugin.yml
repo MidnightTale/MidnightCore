@@ -1,0 +1,5 @@
+name: MidnightCore
+version: '1.0'
+main: fun.mntale.midnightcore.MidnightCore
+api-version: '1.21'
+folia-supported: true
