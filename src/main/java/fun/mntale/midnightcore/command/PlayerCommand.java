@@ -36,7 +36,7 @@ public class PlayerCommand implements BasicCommand {
                     sender.sendMessage("This command can only be used by a player.");
                     return;
                 }
-                FakePlayerFactory.create(MidnightCore.instance, player.getLocation(), args[1]);
+                FakePlayerFactory.create((Plugin) MidnightCore.getInstance(), player.getLocation(), args[1]);
                 sender.sendMessage("Spawned fake player: " + args[1]);
             }
             case "remove" -> {
@@ -83,11 +83,11 @@ public class PlayerCommand implements BasicCommand {
                 });
             }
             case "list" -> {
-                Collection<String> names = FakePlayerFactory.getNames(MidnightCore.instance);
+                Collection<String> names = FakePlayerFactory.getNames((Plugin) MidnightCore.getInstance());
                 if (names.isEmpty()) {
                     sender.sendMessage("No fake players found for this plugin.");
                 } else {
-                    sender.sendMessage("Fake players for " + MidnightCore.instance.getName() + ": " + String.join(", ", names));
+                    sender.sendMessage("Fake players for " + MidnightCore.getInstance().getName() + ": " + String.join(", ", names));
                 }
             }
             default -> sender.sendMessage("Usage: /player <spawn|remove|teleport|list> ...");
@@ -102,14 +102,16 @@ public class PlayerCommand implements BasicCommand {
     @Override
     public Collection<String> suggest(CommandSourceStack commandSourceStack, String[] args) {
         List<String> suggestions = new ArrayList<>();
-        if (args.length == 1) {
-            if ("spawn".startsWith(args[0].toLowerCase())) suggestions.add("spawn");
-            if ("remove".startsWith(args[0].toLowerCase())) suggestions.add("remove");
-            if ("teleport".startsWith(args[0].toLowerCase())) suggestions.add("teleport");
-            if ("list".startsWith(args[0].toLowerCase())) suggestions.add("list");
+        String currentArg = args.length > 0 ? args[args.length - 1].toLowerCase() : "";
+
+        if (args.length <= 1) {
+            if ("spawn".startsWith(currentArg)) suggestions.add("spawn");
+            if ("remove".startsWith(currentArg)) suggestions.add("remove");
+            if ("teleport".startsWith(currentArg)) suggestions.add("teleport");
+            if ("list".startsWith(currentArg)) suggestions.add("list");
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("teleport"))) {
-            for (String name : FakePlayerFactory.getNames(MidnightCore.instance)) {
-                if (name.toLowerCase().startsWith(args[1].toLowerCase())) {
+            for (String name : FakePlayerFactory.getNames((Plugin) MidnightCore.getInstance())) {
+                if (name.toLowerCase().startsWith(currentArg)) {
                     suggestions.add(name);
                 }
             }
